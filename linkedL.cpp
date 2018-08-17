@@ -40,7 +40,6 @@ Event * createEvent(){
    char tempN[500];
    cout << ">>Enter activity name!" << "\n\n";
    read(tempN);
-   /* testing cut out
    char tempS[500];
    cout << ">>Enter the best season for your activity!" << "\n\n";
    read(tempS);
@@ -50,20 +49,15 @@ Event * createEvent(){
    char tempB[500];
    cout << ">>Enter what you should bring!" << "\n\n";
    read(tempB);
-*/
    Event * ptr = new Event;
    ptr->name= new char(strlen(tempN));
-   /*
    ptr->season= new char(strlen(tempS));
    ptr->desc= new char(strlen(tempD));
    ptr->bring= new char(strlen(tempB));
-   */
    strcpy(ptr->name,tempN);
-   /*
    strcpy(ptr->season,tempS);
    strcpy(ptr->desc,tempD);
    strcpy(ptr->bring,tempB); 
-   */
    ptr->advance = NULL;
 
    return ptr;
@@ -135,7 +129,7 @@ int nodeExists(node * head, char test[]){
 }
 void displayAll(node * head){
   if(!head){
-    cout << ">>NO DATA" << "\n\n";
+    cout << ">>END OF DATA" << "\n\n";
   }else{
     cout << "DATA EXISTS: " << head->activity << "\n\n";
     if(head->chain) cout << ">>CHAIN LINKED: "<< head->activity <<"\n\n";
@@ -144,16 +138,15 @@ void displayAll(node * head){
   }
 }
 int displayChain(Event * head){
+  cerr << "--- in disp chain" << '\n';
     if(!head)
       return 0;
     else{
       displayChain(head->advance);
-      cout << ">>" << head->name <<'\n';
-      /*
-      cout << ">>" << head->season <<'\n';
-      cout << ">>" << head->desc <<'\n';
-      cout << ">>" << head->bring <<"\n\n";
-      */
+      cout << ">>output: " << head->name <<'\n';
+      cout << ">>output: " << head->season <<'\n';
+      cout << ">>output: " << head->desc <<'\n';
+      cout << ">>output: " << head->bring <<"\n\n";
       return 1;
     }
 }
@@ -175,11 +168,9 @@ int cleanChain(Event * & head){
   }else{
     cleanChain(head->advance);
     delete[] head->name;
-    /*
     delete[] head->season;
     delete[] head->desc;
     delete[] head->bring;
-    */
     head = NULL;
     return 1;
   }
@@ -192,8 +183,9 @@ int nodeAttacher(){
    do{
       appendNode(head,createEvent());
    }while(again());
-   displayAll(head);
+   displayAll(head->next);
    clean(head);
+   cout << ">>Post clean: ";
    displayAll(head);
    delete head;
    return 0;
