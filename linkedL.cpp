@@ -36,6 +36,7 @@ int clean(node * &);
 int cleanChain(Event * &);
 int displayChain(Event * );
 
+//new Event creator, returns pointer
 Event * createEvent(){
    char tempN[500];
    cout << ">>Enter activity name!" << "\n\n";
@@ -62,11 +63,18 @@ Event * createEvent(){
 
    return ptr;
 };
+//reads in values to temps
 void read(char input[]){
    cin.get(input,500,'\n');
    cin.ignore(500,'\n');
 };
-
+//main show, takes event creator as arg
+//attaches that to secondary linked list
+//assigns takes in name for secondary linked list
+//compares input name to existing names
+//if name exists appends new event node to end of secondary LL
+//if not, creates new node and attaches event node to secondary LL
+//should probably split it up
 void appendNode(node * head, Event * events){
   char type[500];
   cout << ">>What kind of activity is this?" << "\n\n";
@@ -102,7 +110,7 @@ void appendNode(node * head, Event * events){
     temp->next = current;
   //}
 }
-
+//traverses and appends
 void eventAppend(Event * head, Event * append){
     Event * current = head;
     while(current->advance){
@@ -110,7 +118,8 @@ void eventAppend(Event * head, Event * append){
     }
     current->advance = append;
 }
-
+//broken garbage that's ruining my life
+//supposed to traverse list, check for preexisting activity names
 int nodeExists(node * head, char test[]){
   //this is never finding a match
   int exists = 0;
@@ -127,6 +136,7 @@ int nodeExists(node * head, char test[]){
   
   return exists;
 }
+//recursive, moves through the lists, di
 void displayAll(node * head){
   if(!head){
     cout << ">>END OF DATA" << "\n\n";
