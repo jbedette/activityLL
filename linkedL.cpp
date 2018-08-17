@@ -31,7 +31,7 @@ struct node{
 bool again();
 void read(char[]);
 void eventAppend(Event *, Event *);
-int nodeExists(node *, char[]);
+bool nodeExists(node *, char[]);
 int clean(node * &);
 int cleanChain(Event * &);
 int displayChain(Event * );
@@ -40,24 +40,9 @@ Event * createEvent(){
    char tempN[500];
    cout << ">>Enter activity name!" << "\n\n";
    read(tempN);
-   char tempS[500];
-   cout << ">>Enter the best season for your activity!" << "\n\n";
-   read(tempS);
-   char tempD[500];
-   cout << ">>Enter activity description!" << "\n\n";
-   read(tempD);
-   char tempB[500];
-   cout << ">>Enter what you should bring!" << "\n\n";
-   read(tempB);
    Event * ptr = new Event;
    ptr->name= new char(strlen(tempN));
-   ptr->season= new char(strlen(tempS));
-   ptr->desc= new char(strlen(tempD));
-   ptr->bring= new char(strlen(tempB));
    strcpy(ptr->name,tempN);
-   strcpy(ptr->season,tempS);
-   strcpy(ptr->desc,tempD);
-   strcpy(ptr->bring,tempB); 
    ptr->advance = NULL;
 
    return ptr;
@@ -67,15 +52,24 @@ void read(char input[]){
    cin.ignore(500,'\n');
 };
 
+bool nodeExists(node * head, char match[]){
+  cerr << "---activ: " << head->activity << '\n';
+  cerr << "---match: " << match << '\n';
+  if(head && strcmp(head->activity,match) == 0)
+    return 1;
+  else if(head->next)
+    nodeExists(head->next,match);
+  return 0;
+}
+
 void appendNode(node * head, Event * events){
   char type[500];
   cout << ">>What kind of activity is this?" << "\n\n";
   read(type);
   node * current = head;
   node * temp = head;
-  /*
-  if(nodeExists(head,type)){
-    while(strcmp(head->activity,type)==0){
+  if(nodeExists(current,type)){
+    while(strcmp(current->activity,type)==0){
       current = current->next;
     }
     if(!head->chain){
@@ -85,7 +79,6 @@ void appendNode(node * head, Event * events){
     }
   }
   else{
-  */
     while(current){
       temp = current;
       current = current->next;
@@ -100,7 +93,7 @@ void appendNode(node * head, Event * events){
     current->activity = new char[strlen(type)];
     strcpy(current->activity, type);
     temp->next = current;
-  //}
+  }
 }
 
 void eventAppend(Event * head, Event * append){
@@ -111,22 +104,6 @@ void eventAppend(Event * head, Event * append){
     current->advance = append;
 }
 
-int nodeExists(node * head, char test[]){
-  //this is never finding a match
-  int exists = 0;
-  cerr << "---In node exists" << "\n\n";
-  cout << "---head->act: " << head->activity << '\n';
-  cout << "---test: " << test << '\n';
-
-  if(!head)
-    return exists;
-  else if(strcmp(head->activity, test)==0){
-    nodeExists(head->next,test);
-    ++exists;
-  }
-  
-  return exists;
-}
 void displayAll(node * head){
   if(!head){
     cout << ">>END OF DATA" << "\n\n";
@@ -144,9 +121,6 @@ int displayChain(Event * head){
     else{
       displayChain(head->advance);
       cout << ">>output: " << head->name <<'\n';
-      cout << ">>output: " << head->season <<'\n';
-      cout << ">>output: " << head->desc <<'\n';
-      cout << ">>output: " << head->bring <<"\n\n";
       return 1;
     }
 }
@@ -180,6 +154,7 @@ int cleanChain(Event * & head){
 int nodeAttacher(){
    node * head = new node();
    head->next=NULL;
+   head->activity=NULL;
    do{
       appendNode(head,createEvent());
    }while(again());
