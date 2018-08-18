@@ -31,7 +31,7 @@ struct node{
 bool again();
 void read(char[]);
 void eventAppend(Event *, Event *);
-int nodeExists(node *, char[]);
+bool nodeExists(node *, char[]);
 int clean(node * &);
 int cleanChain(Event * &);
 int displayChain(Event * );
@@ -51,10 +51,10 @@ Event * createEvent(){
    cout << ">>Enter what you should bring!" << "\n\n";
    read(tempB);
    Event * ptr = new Event;
-   ptr->name= new char(strlen(tempN));
-   ptr->season= new char(strlen(tempS));
-   ptr->desc= new char(strlen(tempD));
-   ptr->bring= new char(strlen(tempB));
+   ptr->name= new char[(strlen(tempN)+1)];
+   ptr->season= new char[(strlen(tempS)+1)];
+   ptr->desc= new char[(strlen(tempD)+1)];
+   ptr->bring= new char[(strlen(tempB)+1)];
    strcpy(ptr->name,tempN);
    strcpy(ptr->season,tempS);
    strcpy(ptr->desc,tempD);
@@ -68,6 +68,31 @@ void read(char input[]){
    cin.get(input,500,'\n');
    cin.ignore(500,'\n');
 };
+/*
+int nodeExists(node * head, char match[]){
+  if(head->activity){
+    if(strcmp(head->activity, match))
+      return 1;
+    else if(head->next)
+      nodeExists(head->next,match);
+  }
+  return 0;
+}
+*/
+bool nodeExists(node * head, char type[]){
+  node * current = head;
+  while(current){
+    if(current->activity){
+      cerr << "current exists" << "\n\n";
+     if(strcmp(current->activity,type)==0){
+      cerr << "current strcmp" << "\n\n";
+       return true;
+     }
+    }
+  current = current->next;
+  }
+  return false;
+}
 //main show, takes event creator as arg
 //attaches that to secondary linked list
 //assigns takes in name for secondary linked list
@@ -81,34 +106,20 @@ void appendNode(node * head, Event * events){
   read(type);
   node * current = head;
   node * temp = head;
-  /*
-  if(nodeExists(head,type)){
-    while(strcmp(head->activity,type)==0){
-      current = current->next;
-    }
-    if(!head->chain){
-      head->chain = events;
-    }else{
-      eventAppend(head->chain, events);
-    }
+  while(current){
+    temp = current;
+    current = current->next;
   }
+  current = new node;
+  current->next = NULL;
+  if(!current->chain)
+    current->chain = events;
   else{
-  */
-    while(current){
-      temp = current;
-      current = current->next;
-    }
-    current = new node;
-    current->next = NULL;
-    if(!current->chain)
-      current->chain = events;
-    else{
-      eventAppend(current->chain,events);
-    }
-    current->activity = new char[strlen(type)];
-    strcpy(current->activity, type);
-    temp->next = current;
-  //}
+    eventAppend(current->chain,events);
+  }
+  current->activity = new char[strlen(type)];
+  strcpy(current->activity, type);
+  temp->next = current;
 }
 //traverses and appends
 void eventAppend(Event * head, Event * append){
@@ -118,31 +129,12 @@ void eventAppend(Event * head, Event * append){
     }
     current->advance = append;
 }
-//broken garbage that's ruining my life
-//supposed to traverse list, check for preexisting activity names
-int nodeExists(node * head, char test[]){
-  //this is never finding a match
-  int exists = 0;
-  cerr << "---In node exists" << "\n\n";
-  cout << "---head->act: " << head->activity << '\n';
-  cout << "---test: " << test << '\n';
-
-  if(!head)
-    return exists;
-  else if(strcmp(head->activity, test)==0){
-    nodeExists(head->next,test);
-    ++exists;
-  }
-  
-  return exists;
-}
 //recursive, moves through the lists, di
 void displayAll(node * head){
   if(!head){
     cout << ">>END OF DATA" << "\n\n";
   }else{
-    cout << "DATA EXISTS: " << head->activity << "\n\n";
-    if(head->chain) cout << ">>CHAIN LINKED: "<< head->activity <<"\n\n";
+    if(head->chain) cout << ">>Activity type: "<< head->activity <<"\n\n";
     displayChain(head->chain);
     displayAll(head->next);
   }
@@ -153,10 +145,10 @@ int displayChain(Event * head){
       return 0;
     else{
       displayChain(head->advance);
-      cout << ">>output: " << head->name <<'\n';
-      cout << ">>output: " << head->season <<'\n';
-      cout << ">>output: " << head->desc <<'\n';
-      cout << ">>output: " << head->bring <<"\n\n";
+      cout << ">>name: " << head->name <<'\n';
+      cout << ">>season: " << head->season <<'\n';
+      cout << ">>description: " << head->desc <<'\n';
+      cout << ">>to bring: " << head->bring <<"\n\n";
       return 1;
     }
 }
@@ -214,25 +206,3 @@ int main(){
   nodeAttacher();
   return 0;
 }
-/*
-void recursiveAppend(node * head,int & data  need to bring in a pointer to obj, int data is tes){
-    if(!head){//if head doesn't exist make it
-        head = new node;
-        head->next = NULL;
-        head->data = data;
-        data = 0;
-    }else{
-        addNodeEnd(head->next, data);
-    }
-}
-*/
-
-   /*
-      if(head==NULL){//if head doesn't exist make it
-      displayText("In null head",true);
-      head->next = NULL;
-      head->data = data;
-      }else{
-      */
-
-
